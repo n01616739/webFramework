@@ -1,0 +1,51 @@
+# Node.js
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Dependency directories
+bower_components/
+
+# Build directories
+dist/
+build/
+
+# Environment variables
+.env
+
+# IDE or Editor files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary or backup files
+*.bak
+*.swp
+
+# Debug files
+*.tmp
+*.temp
+
+# Optional: Uncomment if you want to ignore lock files (not recommended for teams)
+# package-lock.json
+# yarn.lock
+
+# Ignore database-related temporary files
+*.db
+*.sql
+*.sqlite
+
+# Ignore any specific deployment files (if applicable)
+.env.local
+.env.*.local
+
+# Exclude npm debug log backups
+npm-debug.log.*
