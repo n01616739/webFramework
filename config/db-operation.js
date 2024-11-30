@@ -1,113 +1,84 @@
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
+const Airbnb = require('../models/airbnb'); // Import the schema
 
-let db;
-let collection;
-
-// Initialize the connection with MongoDB Atlas
-const initialize = async (connectionString, dbName, collectionName) => {
+// Initialize the MongoDB connection
+const initialize = async (connectionString) => {
   try {
-    const client = new MongoClient(connectionString, {
+    await mongoose.connect(connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      dbName: process.env.DB_NAME, // Dynamic database name from .env
     });
-    await client.connect();
-    db = client.db(dbName); // Use the database dynamically
-    collection = db.collection(collectionName); // Use the collection dynamically
-    console.log(`Connected to database: ${dbName}, collection: ${collectionName}`);
+    console.log(`Connected to MongoDB database: ${process.env.DB_NAME}`);
   } catch (err) {
     console.error('Failed to connect to MongoDB Atlas:', err);
     throw err;
   }
 };
 
-// Add a new document
-const addNewDocument = async (data) => {
+// Add a new Airbnb
+const addNewAirBnB = async (data) => {
   try {
-    const result = await collection.insertOne(data);
-    return result;
+    const newAirbnb = new Airbnb(data);
+    return await newAirbnb.save();
   } catch (err) {
-    console.error('Failed to add new document:', err);
+    console.error('Failed to add new Airbnb:', err);
     throw err;
   }
 };
 
-// Get all documents with pagination and optional filtering
-const getAllDocuments = async (page, perPage, filter = {}) => {
+// Get all Airbnbs with pagination and filtering
+const getAllAirBnBs = async (page, perPage, property_type) => {
   try {
-    const cursor = collection
-      .find(filter)
+    const query = property_type ? { property_type } : {};
+    const skip = (page - 1) * perPage;
+
+    return await Airbnb.find(query)
       .sort({ _id: 1 })
-      .skip((page - 1) * perPage)
-      .limit(perPage);
-    const results = await cursor.toArray();
-    return results;
+      .skip(skip)
+      .limit(perPage)
+      .exec();
   } catch (err) {
-    console.error('Failed to get documents:', err);
+    console.error('Failed to get Airbnbs:', err);
     throw err;
   }
 };
 
-// Get a single document by ID
-const getDocumentById = async (id) => {
+// Get an Airbnb by ID
+const getAirBnBById = async (id) => {
   try {
-    const result = await collection.findOne({ _id: id });
-    return result;
+    return await Airbnb.findById(id).exec();
   } catch (err) {
-    console.error('Failed to get document by ID:', err);
+    console.error('Failed to get Airbnb by ID:', err);
     throw err;
   }
 };
 
-// Update a document by ID
-const updateDocumentById = async (data, id) => {
+// Update an Airbnb by ID
+const updateAirBnBById = async (data, id) => {
   try {
-    const result = await collection.updateOne({ _id: id }, { $set: data });
-    return result;
+    return await Airbnb.findByIdAndUpdate(id, data, { new: true }).exec();
   } catch (err) {
-    console.error('Failed to update document by ID:', err);
+    console.error('Failed to update Airbnb by ID:', err);
     throw err;
   }
 };
 
-// Delete a document by ID
-const deleteDocumentById = async (id) => {
+// Delete an Airbnb by ID
+const deleteAirBnBById = async (id) => {
   try {
-    const result = await collection.deleteOne({ _id: id });
-    return result;
+    return await Airbnb.findByIdAndDelete(id).exec();
   } catch (err) {
-    console.error('Failed to delete document by ID:', err);
+    console.error('Failed to delete Airbnb by ID:', err);
     throw err;
   }
 };
-
-// Switch the collection dynamically
-const switchCollection = async (newCollectionName) => {
-    try {
-      // Validate if the collection exists
-      const collections = await db.listCollections({}, { nameOnly: true }).toArray();
-      const collectionNames = collections.map((col) => col.name);
-  
-      if (!collectionNames.includes(newCollectionName)) {
-        throw new Error(`Collection '${newCollectionName}' does not exist.`);
-      }
-  
-      // Switch to the new collection
-      collection = db.collection(newCollectionName);
-      console.log(`Switched to collection: ${newCollectionName}`);
-      return `Switched to collection: ${newCollectionName}`;
-    } catch (err) {
-      console.error('Failed to switch collection:', err);
-      throw err;
-    }
-  };
-  
 
 module.exports = {
   initialize,
-  addNewDocument,
-  getAllDocuments,
-  getDocumentById,
-  updateDocumentById,
-  deleteDocumentById,
-  switchCollection,
+  addNewAirBnB,
+  getAllAirBnBs,
+  getAirBnBById,
+  updateAirBnBById,
+  deleteAirBnBById,
 };
