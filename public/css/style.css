@@ -1,0 +1,227 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    line-height: 1.6; /* Improve readability */
+}
+
+/* Header */
+header {
+    background: #1f1f1f; /* Slightly lighter dark for header */
+    color: #9b59b6; /* Purple accent color for text */
+    padding: 1rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for separation */
+}
+
+/* Navigation Bar */
+nav {
+    background: #1f1f1f; /* Matches header background */
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #9b59b6; /* Purple accent color for links */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+nav ul li a:hover {
+    color: #8e44ad; /* Darker purple on hover */
+    text-decoration: underline;
+}
+
+/* Table Styles */
+table {
+    width: 90%; /* Adjusted for more room */
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #1f1f1f; /* Slightly lighter background */
+    color: #e0e0e0; /* Light text for contrast */
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+table th,
+table td {
+    border: 1px solid #333333; /* Subtle border */
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle; /* Align multi-line content */
+}
+
+table th {
+    background-color: #2a2a2a; /* Darker for header row */
+    color: #9b59b6; /* Purple accent color for header text */
+}
+
+table tr:nth-child(even) {
+    background-color: #1c1c1c; /* Alternate row color */
+}
+
+table tr:hover {
+    background-color: #333333; /* Highlight on hover */
+}
+
+/* Success Message */
+.success {
+    color: #4caf50; /* Green for success */
+    text-align: center;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* Error Message */
+.error {
+    color: #ff4c4c; /* Bright red for errors */
+    text-align: center;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #9b59b6; /* Purple button */
+    color: #e0e0e0; /* Light text */
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button:hover {
+    background-color: #8e44ad; /* Darker purple on hover */
+}
+
+/* Form Container */
+.form-container {
+    width: 50%;
+    margin: 20px auto;
+    background: #1f1f1f; /* Dark form background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #9b59b6; /* Purple label color */
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #333333;
+    border-radius: 5px;
+    background-color: #121212; /* Dark input background */
+    color: #e0e0e0; /* Light text */
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #9b59b6; /* Purple border on focus */
+    outline: none;
+}
+
+/* Result Container */
+.result-container {
+    width: 80%;
+    margin: 20px auto;
+    background: #1f1f1f; /* Dark background */
+    padding: 20px;
+    border-radius: 10px;
+    color: #e0e0e0; /* Light text */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+.result-container h2 {
+    margin-bottom: 20px;
+    color: #9b59b6; /* Purple heading */
+}
+
+.result-container p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.result-container a {
+    color: #9b59b6; /* Purple link color */
+    text-decoration: none;
+}
+
+.result-container a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background: #1f1f1f;
+    color: #9b59b6;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for separation */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px; /* Smaller font for smaller screens */
+    }
+
+    .form-container {
+        width: 90%; /* Full width for smaller screens */
+    }
+
+    .result-container {
+        width: 95%; /* Adjust for smaller screens */
+    }
+
+    table {
+        width: 100%; /* Full width on smaller screens */
+        font-size: 14px; /* Smaller table text */
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+}
