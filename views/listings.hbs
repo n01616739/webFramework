@@ -1,66 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Airbnb Listings</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <header>
-    <h1>Airbnb Listings</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/add-listing">Add Listing</a></li>
-        <li><a href="/search">Search Listing</a></li>
-        <li><a href="/update">Update Listing</a></li>
-        <li><a href="/delete">Delete Listing</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  {{#if error}}
-    <p class="error">{{error}}</p>
-  {{else}}
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Listing URL</th>
-          <th>Summary</th>
-          <th>Space</th>
-          <th>Description</th>
-          <th>Neighborhood Overview</th>
-          <th>Notes</th>
-          <th>Transit</th>
-          <th>Accommodates</th>
-          <th>Bedrooms</th>
-          <th>Beds</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each listings}}
-          <tr>
-            <td>{{this._id}}</td>
-            <td><a href="{{this.listing_url}}" target="_blank">View Listing</a></td>
-            <td>{{this.summary}}</td>
-            <td>{{this.space}}</td>
-            <td>{{this.description}}</td>
-            <td>{{this.neighborhood_overview}}</td>
-            <td>{{this.notes}}</td>
-            <td>{{this.transit}}</td>
-            <td>{{this.accommodates}}</td>
-            <td>{{this.bedrooms}}</td>
-            <td>{{this.beds}}</td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  {{/if}}
-
-  <footer>
-    <p>&copy; 2024 Airbnb Management</p>
-  </footer>
-</body>
-</html>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {{#each listings}}
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <img src="{{this.imageUrl}}" class="card-img-top" alt="Airbnb Image">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-purple">{{this.title}}</h5>
+          <p class="card-text flex-grow-1">{{this.description}}</p>
+          <a href="/details/{{this.id}}" class="btn btn-sm btn-purple mt-auto align-self-center">View More Details</a>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>

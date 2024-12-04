@@ -7,19 +7,6 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <h1>Update Listing</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/add-listing">Add Listing</a></li>
-        <li><a href="/search">Search Listing</a></li>
-        <li><a href="/update">Update Listing</a></li>
-        <li><a href="/delete">Delete Listing</a></li>
-      </ul>
-    </nav>
-  </header>
-
   <main>
     <form action="/update/{{id}}" method="POST" class="form-container">
       <div class="form-group">
@@ -42,7 +29,7 @@
         <label for="accommodates">Accommodates:</label>
         <input type="number" id="accommodates" name="accommodates" placeholder="Enter updated accommodates" required>
       </div>
-      <button type="submit">Update Listing</button>
+      <button type="submit" class="btn btn-purple">Update Listing</button>
     </form>
 
     {{#if success}}
@@ -51,9 +38,5 @@
       <p class="error">{{error}}</p>
     {{/if}}
   </main>
-
-  <footer>
-    <p>&copy; 2024 Airbnb Management</p>
-  </footer>
 </body>
 </html>

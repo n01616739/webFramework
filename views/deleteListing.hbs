@@ -7,18 +7,6 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <h1>Delete Listing</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/add-listing">Add Listing</a></li>
-        <li><a href="/search">Search Listing</a></li>
-        <li><a href="/update">Update Listing</a></li>
-        <li><a href="/delete">Delete Listing</a></li>
-      </ul>
-    </nav>
-  </header>
 
   <main>
     <form action="/delete" method="POST" class="form-container">
@@ -26,7 +14,7 @@
         <label for="id">Listing ID:</label>
         <input type="text" id="id" name="id" placeholder="Enter listing ID to delete" required>
       </div>
-      <button type="submit">Delete Listing</button>
+      <button type="submit" class="btn btn-purple">Delete Listing</button>
     </form>
 
     {{#if success}}
@@ -35,9 +23,5 @@
       <p class="error">{{error}}</p>
     {{/if}}
   </main>
-
-  <footer>
-    <p>&copy; 2024 Airbnb Management</p>
-  </footer>
 </body>
 </html>

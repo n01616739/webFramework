@@ -4,6 +4,7 @@ const cors = require('cors');
 const { initialize } = require('./config/db-operation');
 const airbnbRoutes = require('./routes/airbnbRoutes');
 const path = require('path');
+const exphbs = require('express-handlebars'); // Import express-handlebars
 
 const app = express();
 
@@ -13,7 +14,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // For parsing form data
 
 // Set up Handlebars as the template engine
-app.set('view engine', 'hbs'); // Use Handlebars
+app.engine(
+  'hbs',
+  exphbs.engine({
+    extname: 'hbs', // File extension
+    layoutsDir: path.join(__dirname, 'views', 'layouts'), // Layouts directory
+    defaultLayout: 'main', // Default layout file
+    partialsDir: path.join(__dirname, 'views', 'partials'), // Optional: For reusable components
+  })
+);
+app.set('view engine', 'hbs'); // Set Handlebars as the view engine
 app.set('views', path.join(__dirname, 'views')); // Set the views directory
 
 // Serve static files (CSS, JS, images)

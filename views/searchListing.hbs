@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Listing</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main>
+    <!-- Search Form -->
+    <form action="/search/listing" method="GET" class="form-container">
+      <div class="form-group">
+        <label for="id">Listing ID:</label>
+        <input type="text" id="id" name="id" placeholder="Enter listing ID" required>
+      </div>
+      <button type="submit" class="btn btn-purple">Search</button>
+    </form>
+
+    <!-- Results Section -->
+    {{#if listing}}
+      <div class="result-container">
+        <h2 class="text-purple">Search Results:</h2>
+        <p><strong>ID:</strong> {{listing._id}}</p>
+        <p><strong>Listing URL:</strong> <a href="{{listing.listing_url}}" target="_blank">{{listing.listing_url}}</a></p>
+        <p><strong>Name:</strong> {{listing.name}}</p>
+        <p><strong>Description:</strong> {{listing.description}}</p>
+        <p><strong>Summary:</strong> {{listing.summary}}</p>
+        <p><strong>Space:</strong> {{listing.space}}</p>
+        <p><strong>Neighborhood Overview:</strong> {{listing.neighborhood_overview}}</p>
+        <p><strong>Notes:</strong> {{listing.notes}}</p>
+        <p><strong>Transit:</strong> {{listing.transit}}</p>
+        <p><strong>Accommodates:</strong> {{listing.accommodates}}</p>
+        <p><strong>Bedrooms:</strong> {{listing.bedrooms}}</p>
+        <p><strong>Beds:</strong> {{listing.beds}}</p>
+        <img src="{{listing.imageUrl}}" alt="Listing Image" class="responsive-image">
+      </div>
+    {{else}}
+      <p class="error text-center">{{error}}</p>
+    {{/if}}
+  </main>
+</body>
+</html>

@@ -1,28 +1,44 @@
 /* Global Styles */
 body {
     font-family: Arial, sans-serif;
+    min-height: 100vh;
     margin: 0;
+    display: flex;
+    flex-direction: column;
     padding: 0;
     background-color: #121212; /* Dark background */
     color: #e0e0e0; /* Light text */
     line-height: 1.6; /* Improve readability */
+    overflow: auto;
+    -ms-overflow-style: none; /* Hide scrollbar on Internet Explorer and Edge */
+    scrollbar-width: none; /* Hide scrollbar on Firefox */
+}
+
+
+main {
+    flex: 1; /* Push footer to the bottom for short content */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none; /* Hide scrollbar on Chrome, Safari, and Edge */
 }
 
 /* Header */
 header {
     background: #1f1f1f; /* Slightly lighter dark for header */
     color: #9b59b6; /* Purple accent color for text */
-    padding: 1rem;
+
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1rem; /* Larger font size */
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for separation */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow for separation */
 }
 
 /* Navigation Bar */
 nav {
     background: #1f1f1f; /* Matches header background */
-    padding: 10px 0;
+    padding: 8px 0; /* Reduced padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
 }
 
 nav ul {
@@ -30,160 +46,135 @@ nav ul {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end; /* Align to the right */
+    align-items: center;
 }
 
 nav ul li {
-    margin: 0 15px;
+    margin: 0 10px; /* Reduced spacing between items */
 }
 
 nav ul li a {
-    color: #9b59b6; /* Purple accent color for links */
+    color: #ffffff; /* White text for better contrast */
     text-decoration: none;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 0.7rem; /* Extra small font size */
+    padding: 5px 10px; /* Add padding for clickable area */
+    border-radius: 5px; /* Rounded corners for hover effect */
+    transition: all 0.3s ease; /* Smooth transition for hover */
 }
 
 nav ul li a:hover {
-    color: #8e44ad; /* Darker purple on hover */
-    text-decoration: underline;
+    background-color: #9b59b6; /* Purple background on hover */
+    color: #ffffff; /* Ensure white text remains visible */
+    transform: scale(1.05); /* Slight zoom effect */
+    text-decoration: none;
 }
 
-/* Table Styles */
-table {
-    width: 90%; /* Adjusted for more room */
-    margin: 20px auto;
-    border-collapse: collapse;
-    background-color: #1f1f1f; /* Slightly lighter background */
-    color: #e0e0e0; /* Light text for contrast */
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-table th,
-table td {
-    border: 1px solid #333333; /* Subtle border */
-    padding: 12px;
-    text-align: left;
-    vertical-align: middle; /* Align multi-line content */
-}
-
-table th {
-    background-color: #2a2a2a; /* Darker for header row */
-    color: #9b59b6; /* Purple accent color for header text */
-}
-
-table tr:nth-child(even) {
-    background-color: #1c1c1c; /* Alternate row color */
-}
-
-table tr:hover {
-    background-color: #333333; /* Highlight on hover */
-}
-
-/* Success Message */
-.success {
-    color: #4caf50; /* Green for success */
-    text-align: center;
-    font-weight: bold;
-    margin: 20px 0;
-}
-
-/* Error Message */
-.error {
-    color: #ff4c4c; /* Bright red for errors */
-    text-align: center;
-    font-weight: bold;
-    margin: 20px 0;
-}
-
-/* Buttons */
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #9b59b6; /* Purple button */
-    color: #e0e0e0; /* Light text */
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth hover effect */
-}
-
-button:hover {
-    background-color: #8e44ad; /* Darker purple on hover */
+/* Active Link */
+nav ul li a.active {
+    background-color: #8e44ad; /* Darker purple for active link */
+    color: #ffffff;
+    border-radius: 5px; /* Rounded corners */
 }
 
 /* Form Container */
 .form-container {
-    width: 50%;
-    margin: 20px auto;
+    width: 60%;
+    max-width: 600px; /* Limit max width for large screens */
+    margin: 50px auto;
     background: #1f1f1f; /* Dark form background */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Stronger shadow for focus */
 }
 
-/* Form Group */
-.form-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
+/* Form Heading */
+.form-container h2 {
+    text-align: center;
+    color: #9b59b6; /* Purple heading */
+    margin-bottom: 25px;
+    font-size: 1.8rem; /* Larger heading font size */
 }
 
-.form-group label {
+/* Form Labels */
+.form-container label {
+    display: block;
+    margin-bottom: 10px;
     font-weight: bold;
-    color: #9b59b6; /* Purple label color */
-    margin-bottom: 5px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    padding: 10px;
-    border: 1px solid #333333;
-    border-radius: 5px;
-    background-color: #121212; /* Dark input background */
-    color: #e0e0e0; /* Light text */
+    color: #e0e0e0;
     font-size: 1rem;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #9b59b6; /* Purple border on focus */
+/* Form Inputs */
+.form-container input,
+.form-container textarea,
+.form-container select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #121212;
+    color: #e0e0e0;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border 0.3s ease;
+}
+
+.form-container input:focus,
+.form-container textarea:focus,
+.form-container select:focus {
+    border-color: #9b59b6; /* Purple border focus */
     outline: none;
 }
 
-/* Result Container */
-.result-container {
-    width: 80%;
-    margin: 20px auto;
-    background: #1f1f1f; /* Dark background */
-    padding: 20px;
-    border-radius: 10px;
-    color: #e0e0e0; /* Light text */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+/* Form Buttons */
+.form-container button {
+    background-color: #9b59b6; /* Purple button */
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    width: 100%;
+    text-align: center;
 }
 
-.result-container h2 {
-    margin-bottom: 20px;
-    color: #9b59b6; /* Purple heading */
+.form-container button:hover {
+    background-color: #8e44ad; /* Darker purple on hover */
+    transform: scale(1.05); /* Slight scale effect */
 }
 
-.result-container p {
-    margin: 10px 0;
-    font-size: 1rem;
+.form-container .btn-secondary {
+    background-color: #444444;
+    color: #e0e0e0;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
 }
 
-.result-container a {
-    color: #9b59b6; /* Purple link color */
-    text-decoration: none;
+.form-container .btn-secondary:hover {
+    background-color: #5a5a5a;
 }
 
-.result-container a:hover {
-    text-decoration: underline;
+/* Success and Error Messages */
+.success,
+.error {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.success {
+    color: #4caf50; /* Green for success */
+}
+
+.error {
+    color: #ff4c4c; /* Bright red for errors */
 }
 
 /* Footer */
@@ -191,37 +182,118 @@ footer {
     background: #1f1f1f;
     color: #9b59b6;
     text-align: center;
-    padding: 1rem;
-    position: fixed;
-    bottom: 0;
+    padding: 0.5rem;
+    position: sticky; /* Stick footer at the bottom */
+    bottom: 0; /* Ensure it's anchored at the bottom */
+    transform: translateY(100%); /* Hide footer initially */
+    transition: transform 0.3s ease-in-out; /* Smooth transition */
     width: 100%;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for separation */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow for separation */
+    font-size: 0.9rem;
+}
+
+body:not(:has(:hover)) footer {
+    transform: translateY(0); /* Show footer when user scrolls up or hovers */
+}
+
+/* Listings Grid */
+.row-cols-1.row-cols-md-3.g-4 {
+    margin: 20px 0;
+}
+
+/* Card Styles */
+.card {
+    border: none; /* Remove default card border */
+    border-radius: 10px; /* Add rounded corners */
+    overflow: hidden; /* Ensure content stays inside the card */
+    background-color: #1f1f1f; /* Dark background for card */
+    color: #e0e0e0; /* Light text color for readability */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Lift card on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Add a shadow effect */
+}
+
+/* Card Image */
+.card-img-top {
+    height: 200px; /* Fixed height for consistency */
+    object-fit: cover; /* Ensure images are properly cropped */
+    border-bottom: 3px solid #9b59b6; /* Purple border for accent */
+}
+
+/* Card Body */
+.card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Column layout */
+    justify-content: space-between;
+}
+
+/* Card Title */
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #9b59b6; /* Purple accent for title */
+    margin-bottom: 10px;
+}
+
+/* Card Text */
+.card-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #cccccc; /* Slightly lighter text color */
+    margin-bottom: 15px;
+    flex-grow: 1; /* Ensure description fills space */
+}
+
+/* Button */
+.btn-purple {
+    background-color: #9b59b6; /* Purple button background */
+    color: #ffffff; /* White text */
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase; /* Make button text uppercase */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-purple:hover {
+    background-color: #8e44ad; /* Darker purple on hover */
+    transform: scale(1.05); /* Slight zoom on hover */
+    color: #ffffff; /* Ensure text color stays white */
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    body {
-        font-size: 14px; /* Smaller font for smaller screens */
+    .card-img-top {
+        height: 150px; /* Reduce image height for smaller screens */
     }
 
+    .card-title {
+        font-size: 1rem; /* Adjust title size for smaller screens */
+    }
+
+    .card-text {
+        font-size: 0.8rem; /* Adjust text size for readability */
+    }
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
     .form-container {
-        width: 90%; /* Full width for smaller screens */
+        width: 90%; /* Make form take up more space on smaller screens */
     }
 
-    .result-container {
-        width: 95%; /* Adjust for smaller screens */
-    }
-
-    table {
-        width: 100%; /* Full width on smaller screens */
-        font-size: 14px; /* Smaller table text */
+    header {
+        font-size: 1.6rem; /* Adjust header size for smaller screens */
     }
 
     nav ul {
-        flex-direction: column;
-    }
-
-    nav ul li {
-        margin: 10px 0;
+        justify-content: center; /* Center align navigation for smaller screens */
     }
 }
