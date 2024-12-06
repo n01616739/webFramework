@@ -49,6 +49,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/AirBnBs/form - Serve the search form
+router.get('/form', (req, res) => {
+  res.render('airbnbForm'); // Render the form page using template engine (e.g., EJS)
+});
+
+// POST /api/AirBnBs/form - Handle form submission and display results
+router.post('/form', async (req, res) => {
+  const { error, value } = querySchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
+  const { page, perPage, property_type } = value;
+
+  try {
+    const results = await getAllAirBnBs(page, perPage, property_type); // Fetch data using existing method
+    res.render('airbnbResults', { results }); // Render the results using template engine
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch Airbnbs', error: err.message });
+  }
+});
+
+
 // GET /api/AirBnBs/:id - Get an Airbnb by ID
 router.get('/:id', async (req, res) => {
   const { error } = airbnbIdSchema.validate(req.params);
@@ -96,8 +119,6 @@ router.get('/review/:id', async (req, res) => {
 });
 
 /// GET /api/AirBnBs/:id - Retrieve a specific AirBnB with selected fields
-
-
 
 router.get('/:id', async (req, res) => {
   try {
