@@ -23,6 +23,12 @@ const router = express.Router();
 //   price: Joi.number().min(0).required(),
 // });
 
+// Define the schema for validating query parameters
+const querySchema = Joi.object({
+  page: Joi.number().integer().positive().default(1), // Page number should be a positive integer
+  perPage: Joi.number().integer().positive().default(5), // Results per page should be a positive integer
+  property_type: Joi.string().optional(), // Property type is optional
+});
 
 
 const addAirbnbSchema = Joi.object({
@@ -164,19 +170,50 @@ router.get('/form', (req, res) => {
 });
 
 // POST /api/AirBnBs/form - Handle form submission and display results
+// router.post('/form', async (req, res) => {
+//   const { error, value } = querySchema.validate(req.body);
+//   if (error) {
+//     return res.status(400).json({ message: error.details[0].message });
+//   }
+
+//   const { page, perPage, property_type } = value;
+
+//   try {
+//     const results = await getAllAirBnBs(page, perPage, property_type); // Fetch data using existing method
+//     res.render('airbnbResults', { results }); // Render the results using template engine
+//   } catch (err) {
+//     res.status(500).json({ message: 'Failed to fetch Airbnbs', error: err.message });
+//   }
+// });
+
+
+
+
 router.post('/form', async (req, res) => {
+  // Validate query parameters using querySchema
   const { error, value } = querySchema.validate(req.body);
+
   if (error) {
-    return res.status(400).json({ message: error.details[0].message });
+    return res.status(400).render('error', {
+      message: 'Validation Error',
+      error: error.details[0].message, // Display specific validation error
+    });
   }
 
   const { page, perPage, property_type } = value;
 
   try {
-    const results = await getAllAirBnBs(page, perPage, property_type); // Fetch data using existing method
-    res.render('airbnbResults', { results }); // Render the results using template engine
+    // Fetch Airbnb listings from the database based on query parameters
+    const results = await getAllAirBnBs(page, perPage, property_type);
+
+    // Render the results page
+    res.render('airbnbResults', { results });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch Airbnbs', error: err.message });
+    console.error('Failed to fetch Airbnb listings:', err);
+    res.status(500).render('error', {
+      message: 'Failed to fetch listings',
+      error: err.message,
+    });
   }
 });
 
