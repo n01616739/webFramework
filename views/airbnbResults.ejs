@@ -4,29 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airbnb Results</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .listing-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .listing-card:hover {
+            transform: translateY(-10px);
+        }
+        .listing-img {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .card-text {
+            font-size: 0.875rem;
+            color: #555;
+        }
+        .price {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .property-type {
+            color: #555;
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Airbnb Listings</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Property Type</th>
-            </tr>
-        </thead>
-        <tbody>
+
+    <div class="container mt-5">
+        <h1>Airbnb Listings</h1>
+
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="http://localhost:3000/api/AirBnBs/form" class="btn btn-primary">Back to Search</a>
+        </div>
+
+        <!-- Listings Section -->
+        <div class="row" id="resultsContainer">
             <% results.forEach(result => { %>
-                <tr>
-                    <td><%= result.name %></td>
-                    <td><%= result.description %></td>
-                    <td><%= result.price %></td>
-                    <td><%= result.property_type %></td>
-                </tr>
+                <div class="col-md-4 mb-4" data-property-type="<%= result.property_type %>">
+                    <div class="card listing-card">
+                        <img class="card-img-top listing-img" src="<%= result.images && result.images.picture_url ? result.images.picture_url : '/default-image.jpg' %>" alt="<%= result.name %>">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= result.name %></h5>
+                            <p class="card-text"><%= result.description.substring(0, 100) %>...</p>
+                            <p class="price">$<%= result.price %> per night</p>
+                            <p class="property-type"><strong>Property Type:</strong> <%= result.property_type %></p>
+                        </div>
+                    </div>
+                </div>
             <% }) %>
-        </tbody>
-    </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

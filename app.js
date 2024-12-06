@@ -4,7 +4,6 @@ const path = require('path');
 const cors = require('cors');
 const { initialize, getAllAirBnBs } = require('./config/db-operation'); // Assuming getAllAirBnBs is available
 const airbnbRoutes = require('./routes/airbnbRoutes');
-const path = require('path');
 const exphbs = require('express-handlebars'); // Import express-handlebars
 
 const app = express();
