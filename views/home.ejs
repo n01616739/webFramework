@@ -83,8 +83,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/api/AirBnBs/form">Search Listings</a>
                     </li>
+                 
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
+                        <a class="nav-link" href="/api/AirBnBs/add">Add Listing</a>
                     </li>
                 </ul>
             </div>
@@ -93,12 +94,18 @@
 
     <main class="container mt-5">
 
-        <!-- About Section -->
-        <section id="about" class="mb-4">
-            <h2 class="text-center">About</h2>
-            <p class="text-center">This is a simple application to search for Airbnb listings based on page, results per page, and property type. Browse and find your next stay!</p>
-        </section>
+        <!-- Success Message -->
+<% if (success) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
 
+
+        
         <!-- Listings Section -->
         <section id="listings" class="mb-5">
             <h2 class="text-center mb-4">Featured Listings</h2>

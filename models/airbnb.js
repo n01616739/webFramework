@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 // Define the schema for the "listingsAndReviews" collection
 const airbnbSchema = new mongoose.Schema(
   {
-    _id: { type: String, required: true },
-    listing_url: { type: String, required: true },
+    _id: { type: String, required: true,unique: true },
+    listing_url: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     summary: { type: String, optional: true },
     space: { type: String, optional: true },

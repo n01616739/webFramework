@@ -2,9 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const { initialize, getAllAirBnBs } = require('./config/db-operation'); // Assuming getAllAirBnBs is available
+const { initialize, getAllAirBnBs } = require('./config/db-operation');
 const airbnbRoutes = require('./routes/airbnbRoutes');
-const exphbs = require('express-handlebars'); // Import express-handlebars
 
 const app = express();
 
@@ -18,7 +17,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Serve static files (CSS, images, etc.)
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Load environment variables
@@ -30,17 +28,19 @@ app.get('/', async (req, res) => {
   // Read query parameters (default to page 1 and perPage 5 if not provided)
   const page = parseInt(req.query.page) || 1;
   const perPage = parseInt(req.query.perPage) || 5;
+  const success = req.query.success || null; // Capture success message from query string
 
   try {
-    let listings = await getAllAirBnBs(page, perPage); // Fetch listings based on page and perPage
+    // Fetch listings based on page and perPage
+    let listings = await getAllAirBnBs(page, perPage);
 
     // Sort listings: those with images first
-    listings = listings.sort((a, b) => {
-      return b.images && b.images.length > 0 ? 1 : -1; // Ensure listings with images appear first
-    });
+    listings = listings.sort((a, b) => (b.images && b.images.length > 0 ? 1 : -1));
 
-    res.render('home', { listings, page, perPage }); // Pass listings and pagination data to the view
+    // Render the home.ejs view and pass the listings, pagination data, and success message
+    res.render('home', { listings, page, perPage, success });
   } catch (err) {
+    console.error('Error fetching listings:', err);
     res.status(500).send('Error fetching listings');
   }
 });
@@ -48,14 +48,14 @@ app.get('/', async (req, res) => {
 // Initialize database and start server
 (async () => {
   try {
-    await initialize(connectionString); // Initialize MongoDB
+    // Initialize MongoDB connection
+    await initialize(connectionString);
     console.log('Database connected successfully');
 
     // Set up routes
     app.use('/api/AirBnBs', airbnbRoutes);
 
     // Start server
-
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });

@@ -11,43 +11,152 @@ const Joi = require('joi');
 
 const router = express.Router();
 
-// Validation schemas
-const querySchema = Joi.object({
-  page: Joi.number().integer().positive().default(1),
-  perPage: Joi.number().integer().positive().default(10),
-  property_type: Joi.string().optional(),
+// Validation schema
+// const addAirbnbSchema = Joi.object({
+//   _id: Joi.string().required(),
+//   listing_url: Joi.string().uri().required(),
+//   name: Joi.string().required(),
+//   description: Joi.string().required(),
+//   property_type: Joi.string().required(),
+//   room_type: Joi.string().required(),
+//   accommodates: Joi.number().integer().min(1).required(),
+//   price: Joi.number().min(0).required(),
+// });
+
+
+
+const addAirbnbSchema = Joi.object({
+  _id: Joi.string().min(3).max(30).required(), // Validate alphanumeric ID
+  listing_url: Joi.string().uri().required(), // Ensure it's a valid URL
+  name: Joi.string().min(3).max(100).required(), // Name length between 3 and 100 characters
+  description: Joi.string().min(10).max(500).required(), // Description length between 10 and 500 characters
+  property_type: Joi.string().min(3).max(50).required(), // Property type length
+  accommodates: Joi.number().integer().min(1).max(20).required(), // Between 1 and 20 guests
+  price: Joi.number().min(0).max(10000).required(), // Price between $0 and $10,000
 });
 
-const airbnbIdSchema = Joi.object({
-  id: Joi.string().required(),
-});
 
-// POST /api/AirBnBs - Add a new Airbnb
+// // POST /api/AirBnBs - Add a new Airbnb and redirect with a success message
+// router.post('/', async (req, res) => {
+//   // Validate input data
+//   const { error, value } = addAirbnbSchema.validate(req.body);
+//   if (error) {
+//     return res.status(400).render('error', {
+//       message: 'Validation error',
+//       error: error.details[0].message,
+//     });
+//   }
+
+//   try {
+//     // Add the new Airbnb to the database
+//     await addNewAirBnB(value);
+
+//     // Redirect with a success message
+//     res.redirect('/?success=Airbnb added successfully!');
+//   } catch (err) {
+//     console.error('Failed to add new Airbnb:', err);
+//     res.status(500).render('error', {
+//       message: 'Failed to add Airbnb',
+//       error: err.message,
+//     });
+//   }
+// });
+
+
+
+
 router.post('/', async (req, res) => {
+  // Validate input data
+  const { error, value } = addAirbnbSchema.validate(req.body);
+  if (error) {
+    // Render error page if validation fails
+    return res.status(400).render('error', {
+      message: 'Validation error',
+      error: error.details[0].message, // Show field-specific validation error
+    });
+  }
+
   try {
-    const result = await addNewAirBnB(req.body);
-    res.status(201).json({ message: 'Airbnb added successfully', result });
+    // Check for duplicate entries by `_id` or `listing_url`
+    const duplicate = await Airbnb.findOne({
+      $or: [{ _id: value._id }, { listing_url: value.listing_url }],
+    });
+
+    if (duplicate) {
+      return res.status(400).render('error', {
+        message: 'Duplicate record detected',
+        error: 'A listing with the same ID or URL already exists.',
+      });
+    }
+
+    // Add the new Airbnb to the database
+    await addNewAirBnB(value);
+
+    // Redirect with a success message
+    res.redirect('/?success=Airbnb added successfully!');
   } catch (err) {
-    res.status(500).json({ message: 'Failed to add Airbnb', error: err.message });
+    console.error('Failed to add new Airbnb:', err);
+    res.status(500).render('error', {
+      message: 'Failed to add Airbnb',
+      error: err.message,
+    });
   }
 });
+
+// GET /api/AirBnBs/add - Serve the add listing form
+router.get('/add', (req, res) => {
+  res.render('addAirbnb'); // Renders the 'addAirbnb.ejs' template
+});
+
+
+
+
+
+// // GET /api/AirBnBs?page=1&perPage=5&property_type=Apartment
+// router.get('/', async (req, res) => {
+//   const { error, value } = querySchema.validate(req.query);
+//   if (error) {
+//     return res.status(400).json({ message: error.details[0].message });
+//   }
+
+//   const { page, perPage, property_type } = value;
+
+//   try {
+//     const results = await getAllAirBnBs(page, perPage, property_type);
+//     res.status(200).json(results);
+//   } catch (err) {
+//     res.status(500).json({ message: 'Failed to fetch Airbnbs', error: err.message });
+//   }
+// });
+
+
+
 
 // GET /api/AirBnBs?page=1&perPage=5&property_type=Apartment
 router.get('/', async (req, res) => {
   const { error, value } = querySchema.validate(req.query);
   if (error) {
-    return res.status(400).json({ message: error.details[0].message });
+    return res.status(400).render('error', { message: error.details[0].message });
   }
 
   const { page, perPage, property_type } = value;
 
   try {
-    const results = await getAllAirBnBs(page, perPage, property_type);
-    res.status(200).json(results);
+    // Fetch listings
+    const listings = await getAllAirBnBs(page, perPage, property_type);
+
+    // Render the home.ejs template with the listings, pagination data, and success message
+    res.render('home', {
+      listings, // Pass listings to the template
+      page, // Current page number
+      perPage, // Items per page
+      success: req.query.success || null, // Pass success message if present
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch Airbnbs', error: err.message });
+    res.status(500).render('error', { message: 'Failed to fetch Airbnbs', error: err.message });
   }
 });
+
 
 // GET /api/AirBnBs/form - Serve the search form
 router.get('/form', (req, res) => {
