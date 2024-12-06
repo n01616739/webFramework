@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Listing</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main>
+    <form action="/update/{{id}}" method="POST" class="form-container">
+      <div class="form-group">
+        <label for="id">Listing ID:</label>
+        <input type="text" id="id" name="id" placeholder="Enter Listing ID" required>
+      </div>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter updated name" required>
+      </div>
+      <div class="form-group">
+        <label for="property_type">Property Type:</label>
+        <input type="text" id="property_type" name="property_type" placeholder="Enter updated property type" required>
+      </div>
+      <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" placeholder="Enter updated price" required>
+      </div>
+      <div class="form-group">
+        <label for="accommodates">Accommodates:</label>
+        <input type="number" id="accommodates" name="accommodates" placeholder="Enter updated accommodates" required>
+      </div>
+      <button type="submit" class="btn btn-purple">Update Listing</button>
+    </form>
+
+    {{#if success}}
+      <p class="success">{{success}}</p>
+    {{else if error}}
+      <p class="error">{{error}}</p>
+    {{/if}}
+  </main>
+</body>
+</html>
