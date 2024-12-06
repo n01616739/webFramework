@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Airbnb Search</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .listing-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .listing-img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-size: 0.875rem;
+            color: #555;
+        }
+
+        .price {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination .page-item a {
+            color: #007bff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .navbar {
+            background-color: #007bff;
+        }
+
+        .navbar a {
+            color: white;
+        }
+
+        .navbar a:hover {
+            color: #d1d1d1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Airbnb Search</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/AirBnBs/form">Search Listings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-5">
+
+        <!-- About Section -->
+        <section id="about" class="mb-4">
+            <h2 class="text-center">About</h2>
+            <p class="text-center">This is a simple application to search for Airbnb listings based on page, results per page, and property type. Browse and find your next stay!</p>
+        </section>
+
+        <!-- Listings Section -->
+        <section id="listings" class="mb-5">
+            <h2 class="text-center mb-4">Featured Listings</h2>
+            <div class="row">
+                <% listings.forEach(listing => { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card listing-card">
+                            <!-- Image -->
+                            <img class="card-img-top listing-img" src="<%= listing.images && listing.images.picture_url ? listing.images.picture_url : '/default-image.jpg' %>" alt="<%= listing.name %>">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= listing.name %></h5>
+                                <p class="card-text"><%= listing.description.substring(0, 100) %>...</p>
+                                <p class="price">$<%= listing.price %> per night</p>
+                                <p><strong>Property Type:</strong> <%= listing.property_type %></p>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </section>
+
+        <!-- Pagination Controls -->
+        <section id="pagination" class="text-center">
+            <ul class="pagination justify-content-center">
+                <% if (page > 1) { %>
+                    <li class="page-item"><a class="page-link" href="/?page=<%= page - 1 %>&perPage=<%= perPage %>">Previous</a></li>
+                <% } %>
+
+                <li class="page-item disabled"><span class="page-link">Page <%= page %></span></li>
+
+                <% if (listings.length === perPage) { %>
+                    <li class="page-item"><a class="page-link" href="/?page=<%= page + 1 %>&perPage=<%= perPage %>">Next</a></li>
+                <% } %>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2024 Airbnb Search. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
