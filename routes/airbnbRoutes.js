@@ -8,6 +8,8 @@ const {
   deleteAirBnBById,
 } = require('../config/db-operation');
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
+
 
 const router = express.Router();
 
@@ -22,6 +24,33 @@ const router = express.Router();
 //   accommodates: Joi.number().integer().min(1).required(),
 //   price: Joi.number().min(0).required(),
 // });
+
+
+//middleware to authenticate user and check their roles(admin or user)
+
+const authenticateUser = (roles)=>{
+  return (req,res,next)=>{
+      //const authHeader = req.headers['authorization'];
+      const token = req.cookies.auth_token;  // Get token from cookies
+      //const token = authHeader && authHeader.split(' ')[1];
+      
+      if(!token)
+          return res.sendStatus(401);
+
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
+          if(err)
+              return res.sendStatus(403);
+          req.user = user;
+
+          //check user has any roles
+          if (!roles.some((role) => user.roles.includes(role))) {
+              return res.sendStatus(403); // Forbidden
+            }
+
+          next();
+      });
+  };
+};
 
 // Define the schema for validating query parameters
 const querySchema = Joi.object({
@@ -43,6 +72,8 @@ const addAirbnbSchema = Joi.object({
 
 
 // // POST /api/AirBnBs - Add a new Airbnb and redirect with a success message
+
+
 // router.post('/', async (req, res) => {
 //   // Validate input data
 //   const { error, value } = addAirbnbSchema.validate(req.body);
@@ -71,7 +102,7 @@ const addAirbnbSchema = Joi.object({
 
 
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateUser(['admin']), async (req, res) => {
   // Validate input data
   const { error, value } = addAirbnbSchema.validate(req.body);
   if (error) {
@@ -110,7 +141,7 @@ router.post('/', async (req, res) => {
 });
 
 // GET /api/AirBnBs/add - Serve the add listing form
-router.get('/add', (req, res) => {
+router.get('/add', authenticateUser(['admin']), (req, res) => {
   res.render('addAirbnb'); // Renders the 'addAirbnb.ejs' template
 });
 
@@ -139,7 +170,7 @@ router.get('/add', (req, res) => {
 
 
 // GET /api/AirBnBs?page=1&perPage=5&property_type=Apartment
-router.get('/', async (req, res) => {
+router.get('/', authenticateUser(['admin']),async (req, res) => {
   const { error, value } = querySchema.validate(req.query);
   if (error) {
     return res.status(400).render('error', { message: error.details[0].message });
@@ -165,11 +196,12 @@ router.get('/', async (req, res) => {
 
 
 // GET /api/AirBnBs/form - Serve the search form
-router.get('/form', (req, res) => {
+router.get('/form', authenticateUser(['admin','user']), (req, res) => {
   res.render('airbnbForm'); // Render the form page using template engine (e.g., EJS)
 });
 
 // POST /api/AirBnBs/form - Handle form submission and display results
+
 // router.post('/form', async (req, res) => {
 //   const { error, value } = querySchema.validate(req.body);
 //   if (error) {
@@ -189,7 +221,7 @@ router.get('/form', (req, res) => {
 
 
 
-router.post('/form', async (req, res) => {
+router.post('/form',authenticateUser(['admin']), async (req, res) => {
   // Validate query parameters using querySchema
   const { error, value } = querySchema.validate(req.body);
 
@@ -219,7 +251,7 @@ router.post('/form', async (req, res) => {
 
 
 // GET /api/AirBnBs/:id - Get an Airbnb by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateUser(['admin','user']), async (req, res) => {
   const { error } = airbnbIdSchema.validate(req.params);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -238,7 +270,7 @@ router.get('/:id', async (req, res) => {
 
 
 // GET /api/AirBnBs/review/:id - Retrieve reviews for a specific AirBnB
-router.get('/review/:id', async (req, res) => {
+router.get('/review/:id', authenticateUser(['admin','user']), async (req, res) => {
   try {
     const { id } = req.params;
     const airbnb = await getAirBnBById(id);
@@ -266,7 +298,7 @@ router.get('/review/:id', async (req, res) => {
 
 /// GET /api/AirBnBs/:id - Retrieve a specific AirBnB with selected fields
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateUser(['admin','user']), async (req, res) => {
   try {
     const { id } = req.params;
     const airbnb = await getAirBnBById(id);
@@ -297,7 +329,7 @@ router.get('/:id', async (req, res) => {
 
 
 // PUT /api/AirBnBs/:id - Update a specific AirBnB
-router.put('/:id', async (req, res) => {
+router.put('/:id',authenticateUser(['admin']), async (req, res) => {
   try {
     const { id } = req.params;
     const data = req.body;
@@ -316,7 +348,7 @@ router.put('/:id', async (req, res) => {
 
 
 // DELETE /api/AirBnBs/:id - Delete a specific AirBnB
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateUser(['admin']), async (req, res) => {
   try {
     const { id } = req.params;
 

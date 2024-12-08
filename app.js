@@ -4,6 +4,11 @@ const path = require('path');
 const cors = require('cors');
 const { initialize, getAllAirBnBs } = require('./config/db-operation');
 const airbnbRoutes = require('./routes/airbnbRoutes');
+const userRoutes = require('./routes/userRoutes');
+const User = require('./models/user');
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const app = express();
 
@@ -22,6 +27,47 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Load environment variables
 const connectionString = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
+
+// Function to create the first admin if not already present
+const createFirstAdmin = async () => {
+  try {
+    const adminExists = await User.findOne({ roles: 'admin' });
+
+    if (!adminExists) {
+      const hashedPassword = await bcrypt.hash('admin', 10);
+
+      const firstAdmin = new User({
+        username: 'admin',
+        password: hashedPassword,
+        roles: ['admin'],
+      });
+
+      await firstAdmin.save();
+      console.log('First admin created successfully.');
+    } else {
+      console.log('Admin already exists, skip creation.');
+    }
+  } catch (error) {
+    console.error('Error creating first admin:', error);
+  }
+};
+
+// Cookie parser for reading cookies
+app.use(cookieParser())
+
+// Session configuration 
+app.use(session({
+  secret: 'gsbhsbjhnanb', //secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',  // Use secure cookies in production
+    maxAge: 1000 * 60 * 60 * 24,  // 1 day
+  }
+}));
+
+
 
 // Home route - Fetch listings dynamically based on query parameters (page, perPage)
 app.get('/', async (req, res) => {
@@ -52,8 +98,12 @@ app.get('/', async (req, res) => {
     await initialize(connectionString);
     console.log('Database connected successfully');
 
+    // Create the first admin if none exists
+    await createFirstAdmin();
+
     // Set up routes
     app.use('/api/AirBnBs', airbnbRoutes);
+    app.use('/api/users', userRoutes);
 
     // Start server
     app.listen(port, () => {
