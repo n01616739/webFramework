@@ -10,6 +10,7 @@ const {
 const Joi = require('joi');
 
 const router = express.Router();
+const Airbnb = require('../models/airbnb');
 
 // Validation schema
 // const addAirbnbSchema = Joi.object({
@@ -35,10 +36,24 @@ const addAirbnbSchema = Joi.object({
   _id: Joi.string().min(3).max(30).required(), // Validate alphanumeric ID
   listing_url: Joi.string().uri().required(), // Ensure it's a valid URL
   name: Joi.string().min(3).max(100).required(), // Name length between 3 and 100 characters
-  description: Joi.string().min(10).max(500).required(), // Description length between 10 and 500 characters
+  description: Joi.string().min(10).max(500).required(),
+  room_type: Joi.string().min(3).max(50).required(), // Description length between 10 and 500 characters
   property_type: Joi.string().min(3).max(50).required(), // Property type length
   accommodates: Joi.number().integer().min(1).max(20).required(), // Between 1 and 20 guests
   price: Joi.number().min(0).max(10000).required(), // Price between $0 and $10,000
+});
+
+
+
+const updateAirbnbSchema = Joi.object({
+  _id: Joi.string().min(3).max(30).optional(), // Make `_id` optional for updates
+  listing_url: Joi.string().uri().optional(),
+  name: Joi.string().min(3).max(100).required(),
+  description: Joi.string().min(10).max(500).required(),
+  room_type: Joi.string().min(3).max(50).required(),
+  property_type: Joi.string().min(3).max(50).required(),
+  accommodates: Joi.number().integer().min(1).max(20).optional(),
+  price: Joi.number().min(0).max(10000).required(),
 });
 
 
@@ -113,6 +128,16 @@ router.post('/', async (req, res) => {
 router.get('/add', (req, res) => {
   res.render('addAirbnb'); // Renders the 'addAirbnb.ejs' template
 });
+
+
+
+///////////////////////////// Add to the database 
+
+// Route to handle adding new Airbnb
+
+
+
+
 
 
 
@@ -297,38 +322,104 @@ router.get('/:id', async (req, res) => {
 
 
 // PUT /api/AirBnBs/:id - Update a specific AirBnB
+// router.put('/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const data = req.body;
+
+//     const result = await updateAirBnBById(data, id);
+
+//     if (!result) {
+//       return res.status(404).json({ message: 'Airbnb not found' });
+//     }
+
+//     res.status(200).json({ message: 'Airbnb updated successfully', result });
+//   } catch (err) {
+//     res.status(500).json({ message: 'Failed to update Airbnb', error: err.message });
+//   }
+// });
+
+
+// PUT /api/AirBnBs/:id - Update a specific AirBnB
 router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+
   try {
-    const { id } = req.params;
-    const data = req.body;
+    const updatedAirbnb = await updateAirBnBById(data, id);
 
-    const result = await updateAirBnBById(data, id);
-
-    if (!result) {
-      return res.status(404).json({ message: 'Airbnb not found' });
+    if (!updatedAirbnb) {
+      return res.status(404).render('error', {
+        message: 'Airbnb not found',
+        error: `No Airbnb found with ID ${id}`,
+      });
     }
 
-    res.status(200).json({ message: 'Airbnb updated successfully', result });
+    // Render the `updatedAirbnb.ejs` file
+    res.render('updatedAirbnb', { updatedAirbnb });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to update Airbnb', error: err.message });
+    console.error('Error updating Airbnb:', err);
+    res.status(500).render('error', {
+      message: 'Failed to update Airbnb',
+      error: err.message,
+    });
   }
 });
 
 
-// DELETE /api/AirBnBs/:id - Delete a specific AirBnB
-router.delete('/:id', async (req, res) => {
+
+
+
+// GET /api/AirBnBs/:id/edit - Render the edit form for a specific Airbnb listing
+router.get('/:id/edit', async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
+    // Fetch the Airbnb listing by ID
+    const airbnb = await getAirBnBById(id);
 
-    const result = await deleteAirBnBById(id);
-
-    if (!result) {
-      return res.status(404).json({ message: 'Airbnb not found' });
+    if (!airbnb) {
+      return res.status(404).render('error', {
+        message: 'Airbnb not found',
+        error: `No Airbnb found with ID ${id}`,
+      });
     }
 
-    res.status(204).send(); // No content
+    // Render the edit form with the fetched data
+    res.render('editAirbnb', { listing: airbnb });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to delete Airbnb', error: err.message });
+    console.error('Failed to fetch Airbnb for editing:', err);
+    res.status(500).render('error', {
+      message: 'Failed to fetch Airbnb for editing',
+      error: err.message,
+    });
+  }
+});
+
+
+// DELETE /api/AirBnBs/:id - Delete a specific Airbnb
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Attempt to delete the Airbnb by ID
+    const deletedAirbnb = await deleteAirBnBById(id);
+
+    if (!deletedAirbnb) {
+      return res.status(404).render('error', {
+        message: 'Airbnb Not Found',
+        error: `No Airbnb found with ID ${id}`,
+      });
+    }
+
+    // Render the success page with details of the deleted Airbnb
+    res.render('deletedAirbnb', { deletedAirbnb });
+  } catch (err) {
+    console.error('Error deleting Airbnb:', err);
+    res.status(500).render('error', {
+      message: 'Failed to Delete Airbnb',
+      error: err.message,
+    });
   }
 });
 

@@ -67,6 +67,10 @@
         .navbar a:hover {
             color: #d1d1d1;
         }
+
+        .action-buttons {
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -81,9 +85,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:3000/">Home</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/api/AirBnBs/form">Search Listings</a>
                     </li>
-                 
                     <li class="nav-item">
                         <a class="nav-link" href="/api/AirBnBs/add">Add Listing</a>
                     </li>
@@ -95,17 +101,15 @@
     <main class="container mt-5">
 
         <!-- Success Message -->
-<% if (success) { %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= success %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-<% } %>
+        <% if (success) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= success %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <% } %>
 
-
-        
         <!-- Listings Section -->
         <section id="listings" class="mb-5">
             <h2 class="text-center mb-4">Featured Listings</h2>
@@ -120,6 +124,17 @@
                                 <p class="card-text"><%= listing.description.substring(0, 100) %>...</p>
                                 <p class="price">$<%= listing.price %> per night</p>
                                 <p><strong>Property Type:</strong> <%= listing.property_type %></p>
+
+                                <!-- Action Buttons -->
+                                <div class="action-buttons">
+                                    <!-- Update Button -->
+                                    <a href="/api/AirBnBs/<%= listing._id %>/edit" class="btn btn-primary btn-sm">Update</a>
+
+                                    <!-- Delete Button -->
+                                    <form action="/api/AirBnBs/<%= listing._id %>?_method=DELETE" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

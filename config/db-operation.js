@@ -57,22 +57,29 @@ const getAirBnBById = async (id) => {
 // Update an Airbnb by ID
 const updateAirBnBById = async (data, id) => {
   try {
-    return await Airbnb.findByIdAndUpdate(id, data, { new: true }).exec();
+    // Use findByIdAndUpdate with `new: true` to return the updated document
+    return await Airbnb.findByIdAndUpdate(id, data, {
+      new: true, // Return the updated document
+      runValidators: true, // Ensure updated data adheres to schema validation
+    }).exec();
   } catch (err) {
-    console.error('Failed to update Airbnb by ID:', err);
-    throw err;
+    console.error('Error updating Airbnb by ID:', err);
+    throw err; // Propagate the error to the calling function
   }
 };
+
 
 // Delete an Airbnb by ID
 const deleteAirBnBById = async (id) => {
   try {
+    // Use Mongoose to find the Airbnb by ID and delete it
     return await Airbnb.findByIdAndDelete(id).exec();
   } catch (err) {
-    console.error('Failed to delete Airbnb by ID:', err);
+    console.error('Error deleting Airbnb by ID:', err);
     throw err;
   }
 };
+
 
 module.exports = {
   initialize,
