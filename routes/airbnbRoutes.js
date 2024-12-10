@@ -12,6 +12,12 @@ const Joi = require('joi');
 const router = express.Router();
 const Airbnb = require('../models/airbnb');
 
+const authenticateAdmin = require('../utils/authenticateAdmin');
+// Define the schema
+const airbnbIdSchema = Joi.object({
+  id: Joi.string().required().min(3).max(50)
+});
+
 // Validation schema
 // const addAirbnbSchema = Joi.object({
 //   _id: Joi.string().required(),
@@ -82,6 +88,46 @@ const updateAirbnbSchema = Joi.object({
 //     });
 //   }
 // });
+
+// Protected POST /api/AirBnBs/add - Only admins can add a new Airbnb
+router.post('/add', authenticateAdmin, async (req, res) => {
+  const { error, value } = addAirbnbSchema.validate(req.body);
+  if (error) {
+    return res.status(400).render('error', {
+      message: 'Validation error',
+      error: error.details[0].message,
+    });
+  }
+
+  try {
+    const duplicate = await Airbnb.findOne({
+      $or: [{ _id: value._id }, { listing_url: value.listing_url }],
+    });
+
+    if (duplicate) {
+      return res.status(400).render('error', {
+        message: 'Duplicate record detected',
+        error: 'A listing with the same ID or URL already exists.',
+      });
+    }
+
+    await addNewAirBnB(value);
+    res.redirect('/?success=Airbnb added successfully!');
+  } catch (err) {
+    console.error('Failed to add new Airbnb:', err);
+    res.status(500).render('error', {
+      message: 'Failed to add Airbnb',
+      error: err.message,
+    });
+  }
+});
+
+// GET /api/AirBnBs/add - Serve the add listing form
+router.get('/add', authenticateAdmin, (req, res) => {
+  res.render('addAirbnb'); // Render the addAirbnb.ejs template
+});
+
+
 
 
 
@@ -194,22 +240,6 @@ router.get('/form', (req, res) => {
   res.render('airbnbForm'); // Render the form page using template engine (e.g., EJS)
 });
 
-// POST /api/AirBnBs/form - Handle form submission and display results
-// router.post('/form', async (req, res) => {
-//   const { error, value } = querySchema.validate(req.body);
-//   if (error) {
-//     return res.status(400).json({ message: error.details[0].message });
-//   }
-
-//   const { page, perPage, property_type } = value;
-
-//   try {
-//     const results = await getAllAirBnBs(page, perPage, property_type); // Fetch data using existing method
-//     res.render('airbnbResults', { results }); // Render the results using template engine
-//   } catch (err) {
-//     res.status(500).json({ message: 'Failed to fetch Airbnbs', error: err.message });
-//   }
-// });
 
 
 
@@ -321,23 +351,6 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// PUT /api/AirBnBs/:id - Update a specific AirBnB
-// router.put('/:id', async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const data = req.body;
-
-//     const result = await updateAirBnBById(data, id);
-
-//     if (!result) {
-//       return res.status(404).json({ message: 'Airbnb not found' });
-//     }
-
-//     res.status(200).json({ message: 'Airbnb updated successfully', result });
-//   } catch (err) {
-//     res.status(500).json({ message: 'Failed to update Airbnb', error: err.message });
-//   }
-// });
 
 
 // PUT /api/AirBnBs/:id - Update a specific AirBnB
@@ -371,7 +384,7 @@ router.put('/:id', async (req, res) => {
 
 
 // GET /api/AirBnBs/:id/edit - Render the edit form for a specific Airbnb listing
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', authenticateAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -398,7 +411,7 @@ router.get('/:id/edit', async (req, res) => {
 
 
 // DELETE /api/AirBnBs/:id - Delete a specific Airbnb
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',authenticateAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {

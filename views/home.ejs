@@ -91,8 +91,10 @@
                         <a class="nav-link" href="/api/AirBnBs/form">Search Listings</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/api/AirBnBs/add">Add Listing</a>
-                    </li>
+                        <% if (user && user.role === 'admin') { %>
+    <a class="nav-link" href="/api/AirBnBs/add">Add Listing</a>
+<% } %>
+                      </li>
                 </ul>
             </div>
         </div>
@@ -127,13 +129,17 @@
 
                                 <!-- Action Buttons -->
                                 <div class="action-buttons">
-                                    <!-- Update Button -->
-                                    <a href="/api/AirBnBs/<%= listing._id %>/edit" class="btn btn-primary btn-sm">Update</a>
-
-                                    <!-- Delete Button -->
-                                    <form action="/api/AirBnBs/<%= listing._id %>?_method=DELETE" method="POST" style="display: inline;">
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
+                                    <!-- Update Button (Only visible to admins) -->
+                                    <% if (user && user.role === 'admin') { %>
+                                        <a href="/api/AirBnBs/<%= listing._id %>/edit" class="btn btn-primary btn-sm">Update</a>
+                                    <% } %>
+                                
+                                    <!-- Delete Button (Only visible to admins) -->
+                                    <% if (user && user.role === 'admin') { %>
+                                        <form action="/api/AirBnBs/<%= listing._id %>?_method=DELETE" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>

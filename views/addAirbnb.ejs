@@ -60,7 +60,7 @@
         <div class="form-header">
             <h1>Add a New Airbnb Listing</h1>
         </div>
-        <form action="/api/AirBnBs" method="POST" id="airbnbForm">
+        <form action="/api/AirBnBs/add" method="POST" id="airbnbForm">
             <div class="mb-3">
                 <label for="_id" class="form-label">Listing ID:</label>
                 <input type="text" class="form-control" id="_id" name="_id" placeholder="Unique ID" required minlength="3" maxlength="30">
@@ -88,7 +88,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="room_type" class="form-label">Room Type:</label>
-                    <input type="text" class="form-control" id="room_type" name="room_type" placeholder="Room Type">
+                    <input type="text" class="form-control" id="room_type" name="room_type" placeholder="Room Type" required minlength="3" maxlength="50">
                 </div>
             </div>
 
@@ -140,7 +140,11 @@
                         minlength: 3,
                         maxlength: 50,
                     },
-                   
+                    room_type: {
+                        required: true,
+                        minlength: 3,
+                        maxlength: 50,
+                    },
                     accommodates: {
                         required: true,
                         min: 1,
@@ -175,7 +179,9 @@
                     property_type: {
                         required: "Property type is required.",
                     },
-                   
+                    room_type: {
+                        required: "Room type is required.",
+                    },
                     accommodates: {
                         required: "Please specify the number of guests.",
                         min: "Minimum guests is 1.",
