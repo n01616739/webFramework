@@ -90,6 +90,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/api/AirBnBs/form">Search Listings</a>
                     </li>
+
+                      <!-- Logout Button -->
+                <li class="nav-item">
+                    <form action="/auth/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-link nav-link">Logout</button>
+                    </form>
+                </li>
+                
                     <li class="nav-item">
                         <% if (user && user.role === 'admin') { %>
     <a class="nav-link" href="/api/AirBnBs/add">Add Listing</a>
